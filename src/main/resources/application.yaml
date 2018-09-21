@@ -1,0 +1,28 @@
+spring:
+  application.name: blockchain-abs7-oracle
+  profiles.active: dev
+
+---
+spring:
+  profiles: dev
+
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    platform: h2
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+
+  activemq:
+    in-memory: true
+    pooled: false
+    broker-url: tcp://localhost:61616
