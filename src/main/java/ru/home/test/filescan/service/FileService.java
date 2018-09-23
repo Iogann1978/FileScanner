@@ -1,4 +1,4 @@
-package ru.home.test.filescan.ru.home.test.filescan.service;
+package ru.home.test.filescan.service;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
