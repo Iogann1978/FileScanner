@@ -65,12 +65,7 @@ public class ScannerService {
 
                         val file_db = Optional.ofNullable(fileRepository.findByName(file_str));
                         if(!file_db.isPresent()) {
-                            try {
-                                fileService.copy(f, target_str).thenAcceptAsync(r -> log.info("copied: {}", r));
-                            } catch (IOException e) {
-                                log.error(e.getMessage());
-                                e.printStackTrace();
-                            }
+                            fileService.copy(f, target_str).thenAcceptAsync(r -> log.info("copied: {}", r));
                         }
             });
         }

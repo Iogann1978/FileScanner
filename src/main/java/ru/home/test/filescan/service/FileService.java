@@ -22,28 +22,44 @@ public class FileService {
     private ActionRepository actionRepository;
 
     @Async
-    public CompletableFuture<Boolean> copy(Path f, String target_str) throws IOException {
-        val file_str = f.toFile().getName();
-        val file_new = new java.io.File(target_str + java.io.File.separator + file_str);
-        Files.copy(f.toAbsolutePath(), file_new.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        val act = Action.builder()
-                .descript(String.format("file %s was copied to %s", file_str, target_str))
-                .localDateTime(LocalDateTime.now())
-                .build();
-        actionRepository.save(act);
-        return CompletableFuture.completedFuture(true);
+    public CompletableFuture<Boolean> copy(Path f, String target_str) {
+        return CompletableFuture.supplyAsync(() -> {
+            val file_str = f.toFile().getName();
+            val file_new = new java.io.File(target_str + java.io.File.separator + file_str);
+            try {
+                Files.copy(f.toAbsolutePath(), file_new.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+            val act = Action.builder()
+                    .descript(String.format("file %s was copied to %s", file_str, target_str))
+                    .localDateTime(LocalDateTime.now())
+                    .build();
+            actionRepository.save(act);
+            return true;
+        });
     }
 
     @Async
-    public CompletableFuture<Boolean> move(Path f, String target_str) throws IOException {
-        val file_str = f.toFile().getName();
-        val file_new = new java.io.File(target_str + java.io.File.separator + file_str);
-        Files.move(f.toAbsolutePath(), file_new.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        val act = Action.builder()
-                .descript(String.format("file %s was removed to %s", file_str, target_str))
-                .localDateTime(LocalDateTime.now())
-                .build();
-        actionRepository.save(act);
-        return CompletableFuture.completedFuture(true);
+    public CompletableFuture<Boolean> move(Path f, String target_str) {
+        return CompletableFuture.supplyAsync(() -> {
+            val file_str = f.toFile().getName();
+            val file_new = new java.io.File(target_str + java.io.File.separator + file_str);
+            try {
+                Files.move(f.toAbsolutePath(), file_new.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
+            val act = Action.builder()
+                    .descript(String.format("file %s was removed to %s", file_str, target_str))
+                    .localDateTime(LocalDateTime.now())
+                    .build();
+            actionRepository.save(act);
+            return true;
+        });
     }
 }
